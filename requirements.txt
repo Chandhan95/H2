@@ -4,5 +4,4 @@ numpy
 scikit-learn
 gunicorn
 pandas>=1.5.3
-MIMEMultipart
-MIMEText
+
