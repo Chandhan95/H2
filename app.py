@@ -5,13 +5,12 @@ import smtplib
 import pandas as pd
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
+import os
 app = Flask(__name__)
-
 # Load the trained KNN model
-model = joblib.load(r"C:\Users\saich\OneDrive\Desktop\HeartPredictionApp\Heart-Prediction-KNN-Classifier.joblib")
-
-# Email Configuration (Modify with your email details)
+model_path = joblib.load(os.path.join("model", "Heart-Prediction-KNN-Classifier.joblib"))
+model = joblib.load(model_path)
+# Email Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
 SENDER_EMAIL = "saichandhan_ganji@srmap.edu.in"  # Your Gmail address
@@ -22,19 +21,15 @@ def send_email_to_user(prediction, user_email):
         result_text = "Based on the given data,Our model predicted that the person may get heart disease."
     else:
         result_text = "Based on the given data,Our model predicted that the person may not get heart disease."
-
     # Prepare the email content
     subject = "Heart Disease Prediction Result"
     body = f"{result_text}\n\nThank you for using our Heart Disease Prediction service."
-
-
     # Create the email message
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
     msg['To'] = user_email  # Send to user's email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain'))
-
     # Send the email
     try: 
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
@@ -45,17 +40,14 @@ def send_email_to_user(prediction, user_email):
             print("Email sent successfully!")
     except Exception as e:
         print(f"Error sending email: {e}")
-
 @app.route('/')
 def home():
     return render_template('index.html')
-
 @app.route('/predict', methods=['POST'])
 def predict():
     # Get input data from the form
     input_features = [float(x) for x in request.form.values() if x != request.form.get('email')]
     user_email = request.form.get('email')
-
     if len(input_features) != 13:
         return jsonify({'error': 'Please provide exactly 13 input features.'})
     
