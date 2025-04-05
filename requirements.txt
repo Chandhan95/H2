@@ -3,3 +3,7 @@ joblib
 numpy
 scikit-learn
 gunicorn
+pandas
+smtplib
+MIMEMultipart
+MIMEText
