@@ -13,11 +13,9 @@
             background-color: #f9f9f9;
             color: #333;
         }
-
         header {
-            background-color: #4CAF50;
             color: white;
-            padding: 20px 10px;
+            padding: 10px 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
@@ -46,7 +44,6 @@
             margin-top: 10px;
             font-weight: bold;
         }
-
         input {
             width: calc(100% - 20px);
             padding: 10px;
@@ -55,7 +52,6 @@
             border-radius: 4px;
             font-size: 1rem;
         }
-
         button {
             width: 100%;
             padding: 12px;
@@ -68,7 +64,6 @@
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-
         button:hover {
             background-color: #45a049;
         }
@@ -100,40 +95,51 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #4CAF50; /* Green background */
-    color: white;
     padding: 10px 20px;
-    font-size: 24px;
+
     font-weight: bold;
     height: 60px; /* Reduce height */
 }
-
-.left {
-    flex: 1;
-    text-align: left;
-}
-
 .center {
-    flex: 2;
     text-align: center;
 }
+.img{
+    background-image: url(original.png);
+    background-size: cover;       /* Make it cover the entire area */
+    background-position: center;  /* Center the image */
+    
+    height: 100vh;  
+    margin: 0;
+      padding: 0;
+      
 
-.right {
-    flex: 1;
-    text-align: right;
-    align-self: flex-end; /* Moves 'Service' to bottom */
-    font-size: 18px; /* Make 'Service' smaller */
 }
+ .scrolling-text {
+      position: absolute;
+      white-space: nowrap;
+      font-size: 40px;
+      color: white;
+      animation: scroll-right 15s linear infinite;
+    }
 
+    @keyframes scroll-right {
+      0% {
+        left: -100%;
+      }
+      100% {
+        left: 100%;
+      }
+    }
     </style>
 </head>
-<body>
+<body class="img">
     <header>
-        
-            <div class="left">Chandhan's</div>
+        <div class="">
+           <marquee><div class="center" style="font: size 150px; ;">Chandhan's</div>
             <div class="center" style="font-size:222%;">Heart Disease Prediction</div>
-            <scroll><div class="right">Service</div></scroll>
-       
+            <scroll><div class="center">Service</div></scroll>
+            </marquee>
+       </div>
     </header>
    
     

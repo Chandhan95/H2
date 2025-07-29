@@ -8,13 +8,12 @@ from email.mime.text import MIMEText
 import os
 app = Flask(__name__)
 # Load the trained KNN model
-model_path = joblib.load(os.path.join("model", "Heart-Prediction-KNN-Classifier.joblib"))
-model = joblib.load(model_path)
+model = joblib.load(os.path.join("model", "Heart-Prediction-KNN-Classifier.joblib"))
 # Email Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "saichandhan_ganji@srmap.edu.in"  # Your Gmail address
-SENDER_PASSWORD = "xtrt hvuv pahj xkwa"  # Use the app password here
+SENDER_EMAIL = "saichandhan95155@gmail.com"  # Your Gmail address
+SENDER_PASSWORD = "wypz umae nldv ryxp"  # Use the app password here
 def send_email_to_user(prediction, user_email):
     # Determine prediction message
     if prediction == 1:
