@@ -6,65 +6,62 @@ import pandas as pd
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import os
+
 app = Flask(__name__)
+
 # Load the trained KNN model
 model = joblib.load(os.path.join("model", "Heart-Prediction-KNN-Classifier.joblib"))
+
 # Email Configuration
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = "saichandhan95155@gmail.com"  # Your Gmail address
-SENDER_PASSWORD = "wypz umae nldv ryxp"  # Use the app password here
+SENDER_EMAIL = "saichandhan95155@gmail.com"  # Your Gmail
+SENDER_PASSWORD = "wypz umae nldv ryxp"  # App password
+
 def send_email_to_user(prediction, user_email):
-    # Determine prediction message
     if prediction == 1:
-        result_text = "Based on the given data,Our model predicted that the person may get heart disease."
+        result_text = "Based on the given data, our model predicted that the person may get heart disease."
     else:
-        result_text = "Based on the given data,Our model predicted that the person may not get heart disease."
-    # Prepare the email content
+        result_text = "Based on the given data, our model predicted that the person may not get heart disease."
+
     subject = "Heart Disease Prediction Result"
     body = f"{result_text}\n\nThank you for using our Heart Disease Prediction service."
-    # Create the email message
+
     msg = MIMEMultipart()
     msg['From'] = SENDER_EMAIL
-    msg['To'] = user_email  # Send to user's email
+    msg['To'] = user_email
     msg['Subject'] = subject
     msg.attach(MIMEText(body, 'plain'))
-    # Send the email
-    try: 
+
+    try:
         with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
-            server.starttls()  # Secure the connection
+            server.starttls()
             server.login(SENDER_EMAIL, SENDER_PASSWORD)
-            text = msg.as_string()
-            server.sendmail(SENDER_EMAIL, user_email, text)
+            server.send_message(msg)
             print("Email sent successfully!")
     except Exception as e:
         print(f"Error sending email: {e}")
+
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('index.html', prediction_text='')
+
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Get input data from the form
-    input_features = [float(x) for x in request.form.values() if x != request.form.get('email')]
-    user_email = request.form.get('email')
-    if len(input_features) != 13:
-        return jsonify({'error': 'Please provide exactly 13 input features.'})
-    
-    # Define the column names (Adjust these to match the model's training data)
-    columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", 
-               "exang", "oldpeak", "slope", "ca", "thal"]
+    try:
+        input_features = [float(request.form[key]) for key in request.form if key != 'email']
+        user_email = request.form.get('email')
 
-    # Convert input features to pandas DataFrame to match the model's training format
-    input_data = pd.DataFrame([input_features], columns=columns)
-    
-    # Predict using the model
-    prediction = model.predict(input_data)
+        if len(input_features) != 13:
+            return jsonify({'error': 'Please provide exactly 13 input features.'})
 
-    # Send email with the prediction result to the user
-    send_email_to_user(prediction[0], user_email)
-
-    # Return the prediction result to the user on the webpage
-    return render_template('index.html', prediction_text=f'Heart Prediction (0 or 1): {prediction[0]}')
-
+        columns = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
+                   "thalach", "exang", "oldpeak", "slope", "ca", "thal"]
+        input_data = pd.DataFrame([input_features], columns=columns)
+        prediction = model.predict(input_data)
+        send_email_to_user(prediction[0], user_email)
+        return render_template('index.html', prediction_text=f'Heart Prediction (0 = No Disease, 1 = Disease): {prediction[0]}')
+    except Exception as e:
+        return f"An error occurred:"
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True)
